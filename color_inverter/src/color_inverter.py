@@ -1,13 +1,13 @@
 from os.path import splitext
 from pathlib import Path
-from numpy import round, uint8
-from cv2 import imread, resize, imwrite, INTER_CUBIC, IMREAD_GRAYSCALE
+from numpy import round, uint8, fromfile
+from cv2 import imdecode, resize, imencode, INTER_CUBIC, IMREAD_GRAYSCALE
 # from pprint import pprint
 
 # import matplotlib.pyplot as plt
 
 
-
+name_dict = {}
 file_type = ('png', 'jpg', 'jpeg')
 try:
     print('導入資料', end="....")
@@ -21,7 +21,7 @@ try:
     print(paths, end="\n\n")
     need_resize = input('是否要放大圖片(y/n)? :')
     for path in paths:
-        gray = imread(path, IMREAD_GRAYSCALE)
+        gray = imdecode(fromfile(path, dtype=uint8), 0)
     #     imshow('img', img)
         img_shape = gray.shape  # 图像大小(h, w, 3)
         
@@ -49,7 +49,8 @@ try:
         (filename,extension) = splitext(path)
     #     plt.figure(figsize = (200,20))
     #     plt.imshow(np.hstack((gray, dst)), cmap='gray')
-        imwrite(filename+'_inverted'+extension, dst)
+        imencode(extension, dst)[1].tofile(filename+'_inverted'+extension)
+        # imwrite(filename+'_inverted'+extension, dst)
 
     print('\ndone!')
     print("按任意鍵確認~~", end="")
